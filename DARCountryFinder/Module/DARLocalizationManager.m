@@ -62,6 +62,16 @@
 #endif
 }
 
+- (void)startUserLocalization
+{
+    [self.locationManager startUpdatingLocation];
+}
+
+- (void)stopUserLocalization
+{
+    [self.locationManager stopUpdatingLocation];
+}
+
 - (CLLocation *)getLastUserLocation
 {
     return self.lastUserLocation;
@@ -124,6 +134,13 @@
 
         }
     }];
+}
+
+- (void)getOverlayWithString:(NSString *)string
+                     success:(void (^)(id <MKOverlay> overlay))success
+                     failure:(void (^)(NSError *error))failure
+{
+    success([self.kmlParser overlayForString:string]);
 }
 
 - (void)setupMapForLocation:(MKMapView *)mapView

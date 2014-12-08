@@ -52,6 +52,13 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.countrySelected) {
+        self.countrySelected(self.nationsList[indexPath.row]);
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
 
 /*
 #pragma mark - Navigation

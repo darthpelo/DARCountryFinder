@@ -33,6 +33,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
+                                    <action selector="buttonPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="S9X-o6-UsK"/>
                                     <segue destination="3sB-S6-3nk" kind="modal" identifier="toTableView" modalTransitionStyle="flipHorizontal" id="SaJ-jo-ile"/>
                                 </connections>
                             </button>

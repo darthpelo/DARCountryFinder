@@ -17,6 +17,10 @@
 
 - (void)requestUserAuth;
 
+- (void)startUserLocalization;
+
+- (void)stopUserLocalization;
+
 - (CLLocation *)getLastUserLocation;
 
 - (NSArray *)getNationsList;
@@ -30,6 +34,10 @@
 
 - (void)reverseGeocodeWithOverlay:(void (^)(id <MKOverlay> overlay))success
                failure:(void (^)(NSError *error))failure;
+
+- (void)getOverlayWithString:(NSString *)string
+                     success:(void (^)(id <MKOverlay> overlay))success
+failure:(void (^)(NSError *error))failure;
 
 - (void)setupMapForLocation:(CLLocation*)newLocat mapView:(MKMapView *)mapView;
 

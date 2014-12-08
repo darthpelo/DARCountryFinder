@@ -12,6 +12,8 @@
 
 #import "DARLocalizationManager.h"
 
+#import "MBProgressHUD.h"
+
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @end
@@ -37,6 +39,9 @@
 }
 
 #pragma mark - Navigation
+- (IBAction)buttonPressed:(id)sender {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+}
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -46,6 +51,25 @@
     if ([[segue identifier] isEqualToString:@"toTableView"]) {
         DARNationsTableViewController *vc = (DARNationsTableViewController *)[segue destinationViewController];
         vc.nationsList = [[DARLocalizationManager sharedInstance] getNationsList];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        
+        __weak __typeof(self)weakSelf = self;
+        vc.countrySelected = ^(NSString *country){
+            [[DARLocalizationManager sharedInstance] stopUserLocalization];
+            
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            dispatch_queue_t queue = dispatch_get_main_queue();
+            
+            dispatch_async(queue,^{
+                [[DARLocalizationManager sharedInstance] getOverlayWithString:country
+                                                                      success:^(id<MKOverlay> overlay) {
+                                                                          [strongSelf.mapView addOverlay:overlay];
+                                                                          // Position the map so that all overlays and annotations are visible on screen.
+                                                                          strongSelf.mapView.visibleMapRect = [strongSelf.mapView mapRectThatFits:overlay.boundingMapRect];
+                                                                      } failure:nil
+                 ];
+            });
+        };
     }
 }
 

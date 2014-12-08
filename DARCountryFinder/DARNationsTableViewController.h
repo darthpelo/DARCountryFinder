@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void (^DARNationsTableViewControllerCallback)(NSString *country);
+
 @interface DARNationsTableViewController : UITableViewController
+
 @property (nonatomic, strong) NSArray *nationsList;
+@property (nonatomic, strong) DARNationsTableViewControllerCallback countrySelected;
+
 @end
