@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="ufC-wZ-h7g">
+            <objects>
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
+                        <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" pitchEnabled="NO" showsUserLocation="YES" showsBuildings="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pM1-kK-4Z8">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <connections>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="hgt-WS-XWW"/>
+                                </connections>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ibh-ly-iJa">
+                                <rect key="frame" x="482" y="28" width="102" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="2tp-CK-JYc"/>
+                                    <constraint firstAttribute="width" constant="102" id="55X-BZ-H33"/>
+                                </constraints>
+                                <state key="normal" title="Select Nation">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="3sB-S6-3nk" kind="modal" identifier="toTableView" modalTransitionStyle="flipHorizontal" id="SaJ-jo-ile"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="pM1-kK-4Z8" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="7af-3c-BLr"/>
+                            <constraint firstItem="pM1-kK-4Z8" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="bii-ws-W59"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="pM1-kK-4Z8" secondAttribute="bottom" id="bw4-6u-2Wn"/>
+                            <constraint firstItem="Ibh-ly-iJa" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="8" id="dvK-iM-NH3"/>
+                            <constraint firstAttribute="trailing" secondItem="pM1-kK-4Z8" secondAttribute="trailing" id="fTI-pC-b6J"/>
+                            <constraint firstAttribute="trailing" secondItem="Ibh-ly-iJa" secondAttribute="trailing" constant="16" id="qb6-05-KH6"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="pM1-kK-4Z8" id="uHN-w4-yzW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="654" y="463"/>
+        </scene>
+        <!--Nations Table View Controller-->
+        <scene sceneID="0CG-YB-jvC">
+            <objects>
+                <tableViewController id="3sB-S6-3nk" customClass="DARNationsTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="qET-PC-uvq">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="wcm-61-VCa">
+                            <rect key="frame" x="0.0" y="0.0" width="600" height="84"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bei-xH-WqF">
+                                    <rect key="frame" x="546" y="46" width="46" height="30"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="46" id="OC6-zW-RJ1"/>
+                                    </constraints>
+                                    <state key="normal" title="Close">
+                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="back:" destination="3sB-S6-3nk" eventType="touchUpInside" id="yPN-jl-7ZG"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="Bei-xH-WqF" secondAttribute="trailing" constant="8" id="H1u-kO-dWf"/>
+                                <constraint firstItem="Bei-xH-WqF" firstAttribute="top" secondItem="wcm-61-VCa" secondAttribute="top" constant="46" id="WRA-Fw-wTh"/>
+                                <constraint firstAttribute="bottom" secondItem="Bei-xH-WqF" secondAttribute="bottom" constant="8" id="uxH-mg-nLK"/>
+                            </constraints>
+                        </view>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="NationCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="NationCell" id="G0g-i0-Lu1">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="G0g-i0-Lu1" id="bT1-pJ-Y3g">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="3sB-S6-3nk" id="UMn-Gz-Uzz"/>
+                            <outlet property="delegate" destination="3sB-S6-3nk" id="9RU-zE-49o"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Uk0-66-Eda" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1350" y="463"/>
+        </scene>
+    </scenes>
+</document>
