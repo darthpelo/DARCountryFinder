@@ -45,4 +45,8 @@ failure:(void (^)(NSError *error))failure;
 
 - (void)removeAllAnnotationExceptOfCurrentUser:(MKMapView *)mapView;
 
+- (MKAnnotationView *)viewForAnnotation:(id <MKAnnotation>)point;
+
+- (MKOverlayView *)viewForOverlay:(id <MKOverlay>)overlay;
+
 @end

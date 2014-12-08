@@ -51,6 +51,7 @@
     if ([[segue identifier] isEqualToString:@"toTableView"]) {
         DARNationsTableViewController *vc = (DARNationsTableViewController *)[segue destinationViewController];
         vc.nationsList = [[DARLocalizationManager sharedInstance] getNationsList];
+        
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         
         __weak __typeof(self)weakSelf = self;
@@ -106,6 +107,18 @@
     } failure:^(NSError *error) {
         NSLog(@"Error");
     }];
+}
+
+#pragma mark MKMapViewDelegate
+
+- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
+{
+    return [[DARLocalizationManager sharedInstance] viewForOverlay:overlay];
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    return [[DARLocalizationManager sharedInstance] viewForAnnotation:annotation];
 }
 
 @end

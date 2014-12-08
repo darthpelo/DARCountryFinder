@@ -151,7 +151,7 @@
 
 // Create (if necessary) and return the corresponding MKOverlayPathView for
 // the MKShape object.
-- (MKOverlayPathView *)createOverlayView:(MKShape *)shape;
+- (MKOverlayPathRenderer *)createOverlayView:(MKShape *)shape;
 
 @end
 
@@ -209,7 +209,7 @@
     MKShape *mkShape;
     
     MKAnnotationView *annotationView;
-    MKOverlayRenderer *overlayView;
+    MKOverlayPathRenderer *overlayView;
     
     struct {
         int inName:1;

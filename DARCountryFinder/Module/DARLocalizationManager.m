@@ -181,6 +181,16 @@
     [mapView removeAnnotations:annForRemove];
 }
 
+- (MKAnnotationView *)viewForAnnotation:(id <MKAnnotation>)point
+{
+    return [self.kmlParser viewForAnnotation:point];
+}
+
+- (MKOverlayView *)viewForOverlay:(id <MKOverlay>)overlay
+{
+    return [self.kmlParser viewForOverlay:overlay];
+}
+
 #pragma mark - Private methods
 #pragma mark CLLocationManager Delegate
 
