@@ -123,6 +123,7 @@
                failure:(void(^)(NSError *error))failure
 {
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    // Use current user location to determinate, address, country name and country ISO code
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         if (error) {
             failure(error);
