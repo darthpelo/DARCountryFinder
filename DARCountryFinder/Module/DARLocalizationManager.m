@@ -64,6 +64,8 @@
 
 - (void)startUserLocalization
 {
+    self.lastUserLocation = nil;
+    
     [self.locationManager startUpdatingLocation];
 }
 
@@ -82,7 +84,7 @@
     return self.nationsList;
 }
 
-- (void)reverseGeocodeWithOverlay:(void (^)(id <MKOverlay>))success
+- (void)reverseGeocodeWithOverlay:(void (^)(id <MKOverlay>, NSString *countryName))success
                             failure:(void (^)(NSError *))failure
 {
     __weak __typeof(self)weakSelf = self;
@@ -90,7 +92,7 @@
     [self reverseGeocode:self.lastUserLocation
                  success:^(NSDictionary *info) {
                      NSString *country = info[@"country"];
-                     success([weakSelf.kmlParser overlayForString:country]);
+                     success([weakSelf.kmlParser overlayForString:country], country);
                  } failure:^(NSError *error) {
                      failure(error);
                  }
@@ -179,6 +181,7 @@
     }
     
     [mapView removeAnnotations:annForRemove];
+    [mapView removeOverlays:mapView.overlays];
 }
 
 - (MKAnnotationView *)viewForAnnotation:(id <MKAnnotation>)point
@@ -205,11 +208,14 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 - (void)locationManager:(CLLocationManager *)manager
      didUpdateLocations:(NSArray *)locations
 {
-    _lastUserLocation = locations[0];
+    CLLocation *tmp = locations[0];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"com.alessioroberto.darcountryfinder.newlocation"
-                                                        object:self
-     ];
+    if (_lastUserLocation.coordinate.latitude != tmp.coordinate.latitude || _lastUserLocation.coordinate.longitude != tmp.coordinate.longitude) {
+        _lastUserLocation = tmp;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"com.alessioroberto.darcountryfinder.newlocation"
+                                                            object:self
+         ];
+    }
 }
 
 @end

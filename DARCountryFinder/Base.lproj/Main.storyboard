@@ -24,12 +24,13 @@
                                 </connections>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ibh-ly-iJa">
-                                <rect key="frame" x="482" y="28" width="102" height="30"/>
+                                <rect key="frame" x="457" y="28" width="127" height="41"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="2tp-CK-JYc"/>
-                                    <constraint firstAttribute="width" constant="102" id="55X-BZ-H33"/>
+                                    <constraint firstAttribute="height" constant="41" id="2tp-CK-JYc"/>
+                                    <constraint firstAttribute="width" constant="127" id="55X-BZ-H33"/>
                                 </constraints>
-                                <state key="normal" title="Select Nation">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <state key="normal" title="Select Country">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -37,15 +38,31 @@
                                     <segue destination="3sB-S6-3nk" kind="modal" identifier="toTableView" modalTransitionStyle="flipHorizontal" id="SaJ-jo-ile"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="al7-Zk-oo8">
+                                <rect key="frame" x="16" y="28" width="128" height="41"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="41" id="U89-Th-nSV"/>
+                                    <constraint firstAttribute="width" constant="128" id="hfg-QM-xs4"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <state key="normal" title="Current Position">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="positionPressed:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Pky-mi-RSk"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="pM1-kK-4Z8" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="7af-3c-BLr"/>
+                            <constraint firstItem="al7-Zk-oo8" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="16" id="Anc-4C-Gyr"/>
                             <constraint firstItem="pM1-kK-4Z8" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="bii-ws-W59"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="pM1-kK-4Z8" secondAttribute="bottom" id="bw4-6u-2Wn"/>
                             <constraint firstItem="Ibh-ly-iJa" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="8" id="dvK-iM-NH3"/>
                             <constraint firstAttribute="trailing" secondItem="pM1-kK-4Z8" secondAttribute="trailing" id="fTI-pC-b6J"/>
                             <constraint firstAttribute="trailing" secondItem="Ibh-ly-iJa" secondAttribute="trailing" constant="16" id="qb6-05-KH6"/>
+                            <constraint firstItem="al7-Zk-oo8" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="8" id="xRR-VY-YOo"/>
                         </constraints>
                     </view>
                     <connections>

@@ -63,12 +63,12 @@
 - (void)reverseGeocode:(void(^)(NSDictionary *info))success
                failure:(void(^)(NSError *error))failure;
 /**
- *    Return Country MKOverlay from KML file based on current user position (by reverse geocode)
+ *    Return Country MKOverlay from KML file based on current user position (by reverse geocode) and country name
  *
- *    @param success A block with the Country MKOverlay
+ *    @param success A block with two parameters: the Country MKOverlay and the Country name
  *    @param failure The failure block if geocode fails.
  */
-- (void)reverseGeocodeWithOverlay:(void (^)(id <MKOverlay> overlay))success
+- (void)reverseGeocodeWithOverlay:(void (^)(id <MKOverlay> overlay, NSString *countryName))success
                failure:(void (^)(NSError *error))failure;
 
 /**

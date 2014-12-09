@@ -16,6 +16,7 @@
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
+@property (assign, nonatomic) BOOL userPosition;
 @end
 
 @implementation ViewController
@@ -31,6 +32,8 @@
                                                  name:@"com.alessioroberto.darcountryfinder.newlocation"
                                                object:nil
      ];
+    
+    self.userPosition = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,6 +44,16 @@
 #pragma mark - Navigation
 - (IBAction)buttonPressed:(id)sender {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+}
+
+- (IBAction)positionPressed:(id)sender {
+    if (_userPosition == YES) {
+        self.userPosition = NO;
+        [[DARLocalizationManager sharedInstance] stopUserLocalization];
+    } else {
+        self.userPosition = YES;
+        [[DARLocalizationManager sharedInstance] startUserLocalization];
+    }
 }
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -57,6 +70,9 @@
         __weak __typeof(self)weakSelf = self;
         vc.countrySelected = ^(NSString *country){
             [[DARLocalizationManager sharedInstance] stopUserLocalization];
+            weakSelf.userPosition = NO;
+            
+            [[DARLocalizationManager sharedInstance] removeAllAnnotationExceptOfCurrentUser:weakSelf.mapView];
             
             __strong __typeof(weakSelf)strongSelf = weakSelf;
             dispatch_queue_t queue = dispatch_get_main_queue();
@@ -67,6 +83,12 @@
                                                                           [strongSelf.mapView addOverlay:overlay];
                                                                           // Position the map so that all overlays and annotations are visible on screen.
                                                                           strongSelf.mapView.visibleMapRect = [strongSelf.mapView mapRectThatFits:overlay.boundingMapRect];
+                                                                          
+                                                                          MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+                                                                          [annotation setCoordinate:strongSelf.mapView.centerCoordinate];
+                                                                          [strongSelf.mapView addAnnotation:annotation];
+                                                                          annotation.title = country;
+                                                                          [strongSelf.mapView selectAnnotation:annotation animated:YES];
                                                                       } failure:nil
                  ];
             });
@@ -78,32 +100,29 @@
 - (void)reloadMap
 {
     // remove all annotations and overlays
-//    NSMutableArray *annotations = @[].mutableCopy;
-//    [self.mapView.annotations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
-//     {
-//         id<MKAnnotation> annotation = (id<MKAnnotation>)obj;
-//         
-//         if (![annotation isKindOfClass:[MKUserLocation class]]) {
-//             [annotations addObject:annotation];
-//         }
-//     }];
-//    [self.mapView removeAnnotations:annotations];
-//    [self.mapView removeOverlays:self.mapView.overlays];
-    
-//    [[DARLocalizationManager sharedInstance] setupMapForLocation:self.mapView];
+    [[DARLocalizationManager sharedInstance] removeAllAnnotationExceptOfCurrentUser:self.mapView];
     
     DARLocalizationManager *loc = [DARLocalizationManager sharedInstance];
     
     __weak __typeof(self)weakSelf = self;
-    [loc reverseGeocodeWithOverlay:^(id<MKOverlay> overlay) {
-        __strong __typeof(weakSelf)strongSelf = weakSelf;
-        dispatch_queue_t queue = dispatch_get_main_queue();
-        
-        dispatch_async(queue,^{
-            [strongSelf.mapView addOverlay:overlay];
-            // Position the map so that all overlays and annotations are visible on screen.
-            strongSelf.mapView.visibleMapRect = [strongSelf.mapView mapRectThatFits:overlay.boundingMapRect];
-        });
+    [loc reverseGeocodeWithOverlay:^(id<MKOverlay> overlay, NSString *countryName) {
+        if (overlay) {
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            dispatch_queue_t queue = dispatch_get_main_queue();
+            
+            dispatch_async(queue,^{
+                [strongSelf.mapView addOverlay:overlay];
+                
+                // Position the map so that all overlays and annotations are visible on screen.
+                strongSelf.mapView.visibleMapRect = [strongSelf.mapView mapRectThatFits:overlay.boundingMapRect];
+                
+                MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+                [annotation setCoordinate:strongSelf.mapView.centerCoordinate];
+                [strongSelf.mapView addAnnotation:annotation];
+                annotation.title = countryName;
+                [strongSelf.mapView selectAnnotation:annotation animated:YES];
+            });
+        }
     } failure:^(NSError *error) {
         NSLog(@"Error");
     }];

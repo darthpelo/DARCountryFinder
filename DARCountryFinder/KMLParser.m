@@ -619,7 +619,10 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
         strokeColor = [[UIColor colorWithKMLString:accum] retain];
     } else if (flags.inPolyStyle) {
         [fillColor release];
-        fillColor = [[UIColor colorWithKMLString:accum] retain];
+        /**
+         *    Color in world-stripped file is always aaffffff
+         */
+        fillColor = [[UIColor colorWithKMLString:@"aaAAA239"] retain];
     }
     
     [self clearString];

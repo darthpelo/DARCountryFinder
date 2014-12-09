@@ -77,7 +77,21 @@
 
 - (MKAnnotationView *)viewForAnnotation:(id <MKAnnotation>)point;
 - (MKOverlayView *)viewForOverlay:(id <MKOverlay>)overlay;
+
+/**
+ *    Search in placemarks list and return the MKoverlay for the specific string (country name)
+ *
+ *    @param string Placemark name
+ *
+ *    @return MKOverlay
+ */
 - (id <MKOverlay>)overlayForString:(NSString *)string;
+
+/**
+ *    Return all placemark names
+ *
+ *    @return NSArray of NSString
+ */
 - (NSArray *)placemarksName;
 
 @end
