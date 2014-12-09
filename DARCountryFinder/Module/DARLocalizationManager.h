@@ -98,7 +98,7 @@ failure:(void (^)(NSError *error))failure;
 - (void)setupMapForLocation:(MKMapView *)mapView;
 
 /**
- *    Remove all annotations on the MKMapView, excepet user position, if present
+ *    Remove all annotations and overlays on the MKMapView, excepet user position, if present
  *
  *    @param mapView The MKMapView instance
  */

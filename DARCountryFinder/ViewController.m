@@ -15,8 +15,9 @@
 #import "MBProgressHUD.h"
 
 @interface ViewController ()
-@property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (assign, nonatomic) BOOL userPosition;
+@property (strong, nonatomic) DARLocalizationManager *locMgr;
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @end
 
 @implementation ViewController
@@ -24,8 +25,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    _locMgr = [DARLocalizationManager sharedInstance];
     
-    [[DARLocalizationManager sharedInstance] requestUserAuth];
+    /**
+     *    User location auth (iOS 8)
+     */
+    [_locMgr requestUserAuth];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reloadMap)
@@ -46,13 +51,17 @@
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 }
 
+/**
+ *    User can swith on/off automatic localization
+ *
+ */
 - (IBAction)positionPressed:(id)sender {
     if (_userPosition == YES) {
         self.userPosition = NO;
-        [[DARLocalizationManager sharedInstance] stopUserLocalization];
+        [_locMgr stopUserLocalization];
     } else {
         self.userPosition = YES;
-        [[DARLocalizationManager sharedInstance] startUserLocalization];
+        [_locMgr startUserLocalization];
     }
 }
 
@@ -63,59 +72,72 @@
     
     if ([[segue identifier] isEqualToString:@"toTableView"]) {
         DARNationsTableViewController *vc = (DARNationsTableViewController *)[segue destinationViewController];
-        vc.nationsList = [[DARLocalizationManager sharedInstance] getNationsList];
+        vc.nationsList = [_locMgr getNationsList];
         
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         
         __weak __typeof(self)weakSelf = self;
+        
         vc.countrySelected = ^(NSString *country){
-            [[DARLocalizationManager sharedInstance] stopUserLocalization];
+            [_locMgr stopUserLocalization];
             weakSelf.userPosition = NO;
             
-            [[DARLocalizationManager sharedInstance] removeAllAnnotationExceptOfCurrentUser:weakSelf.mapView];
+            [_locMgr removeAllAnnotationExceptOfCurrentUser:weakSelf.mapView];
             
             __strong __typeof(weakSelf)strongSelf = weakSelf;
-            dispatch_queue_t queue = dispatch_get_main_queue();
             
+            dispatch_queue_t queue = dispatch_get_main_queue();
+            /**
+             *    Make mapView operations on main thread
+             */
             dispatch_async(queue,^{
-                [[DARLocalizationManager sharedInstance] getOverlayWithString:country
-                                                                      success:^(id<MKOverlay> overlay) {
-                                                                          [strongSelf.mapView addOverlay:overlay];
-                                                                          // Position the map so that all overlays and annotations are visible on screen.
-                                                                          strongSelf.mapView.visibleMapRect = [strongSelf.mapView mapRectThatFits:overlay.boundingMapRect];
-                                                                          
-                                                                          MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
-                                                                          [annotation setCoordinate:strongSelf.mapView.centerCoordinate];
-                                                                          [strongSelf.mapView addAnnotation:annotation];
-                                                                          annotation.title = country;
-                                                                          [strongSelf.mapView selectAnnotation:annotation animated:YES];
-                                                                      } failure:nil
+                [_locMgr getOverlayWithString:country
+                                      success:^(id<MKOverlay> overlay) {
+                                          // Add country's overlay on the map
+                                          [strongSelf.mapView addOverlay:overlay];
+                                          
+                                          // Position the map so that overlay is visible on screen.
+                                          strongSelf.mapView.visibleMapRect = [strongSelf.mapView mapRectThatFits:overlay.boundingMapRect];
+                                          
+                                          // Add annotation with country name in the callout
+                                          MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+                                          [annotation setCoordinate:strongSelf.mapView.centerCoordinate];
+                                          [strongSelf.mapView addAnnotation:annotation];
+                                          annotation.title = country;
+                                          [strongSelf.mapView selectAnnotation:annotation animated:YES];
+                                      } failure:nil
                  ];
             });
         };
     }
 }
 
-
+/**
+ *    Each time GPS send different user position, overlay and annotation are removed and a new MKOverlay is neccesary.
+ *    To get the correct MKOverlay I use reverse geocode functions, to know in which country user is.
+ */
 - (void)reloadMap
 {
     // remove all annotations and overlays
-    [[DARLocalizationManager sharedInstance] removeAllAnnotationExceptOfCurrentUser:self.mapView];
-    
-    DARLocalizationManager *loc = [DARLocalizationManager sharedInstance];
+    [_locMgr removeAllAnnotationExceptOfCurrentUser:self.mapView];
     
     __weak __typeof(self)weakSelf = self;
-    [loc reverseGeocodeWithOverlay:^(id<MKOverlay> overlay, NSString *countryName) {
+    
+    [_locMgr reverseGeocodeWithOverlay:^(id<MKOverlay> overlay, NSString *countryName) {
         if (overlay) {
             __strong __typeof(weakSelf)strongSelf = weakSelf;
             dispatch_queue_t queue = dispatch_get_main_queue();
-            
+            /**
+             *    Make mapView operations on main thread
+             */
             dispatch_async(queue,^{
+                // Add country's overlay on the map
                 [strongSelf.mapView addOverlay:overlay];
                 
-                // Position the map so that all overlays and annotations are visible on screen.
+                // Position the map so that overlay is visible on screen.
                 strongSelf.mapView.visibleMapRect = [strongSelf.mapView mapRectThatFits:overlay.boundingMapRect];
                 
+                // Add annotation with country name in the callout
                 MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
                 [annotation setCoordinate:strongSelf.mapView.centerCoordinate];
                 [strongSelf.mapView addAnnotation:annotation];
@@ -132,12 +154,12 @@
 
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
 {
-    return [[DARLocalizationManager sharedInstance] viewForOverlay:overlay];
+    return [_locMgr viewForOverlay:overlay];
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
-    return [[DARLocalizationManager sharedInstance] viewForAnnotation:annotation];
+    return [_locMgr viewForAnnotation:annotation];
 }
 
 @end

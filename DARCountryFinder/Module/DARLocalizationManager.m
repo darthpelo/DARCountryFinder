@@ -10,8 +10,8 @@
 #import "KMLParser.h"
 
 @interface DARLocalizationManager ()
-@property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) CLLocation *lastUserLocation;
+@property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) CLPlacemark *actualUserPlacemark;
 @property (nonatomic, strong) KMLParser *kmlParser;
 @property (nonatomic, strong) NSArray *nationsList;
@@ -34,9 +34,16 @@
                                                          ofType:@"kml"];
         
         NSURL *url = [NSURL fileURLWithPath:path];
+        
         _kmlParser = [[KMLParser alloc] initWithURL:url];
+        /**
+         *    Parsing the kml file using Apple KML viewer example
+         */
         [self.kmlParser parseKML];
         
+        /**
+         *    Load  name of all the country in the kml file
+         */
         _nationsList = [self.kmlParser placemarksName];
     }
     
@@ -122,7 +129,9 @@
         } else {
             self.actualUserPlacemark = [placemarks lastObject];
             
-            if (self.actualUserPlacemark.addressDictionary && self.actualUserPlacemark.ISOcountryCode && self.actualUserPlacemark.country) {
+            if (self.actualUserPlacemark.addressDictionary &&
+                self.actualUserPlacemark.ISOcountryCode &&
+                self.actualUserPlacemark.country) {
                 NSMutableDictionary *info = [NSMutableDictionary new];
                 
                 [info setObject:[NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(self.actualUserPlacemark.addressDictionary, NO)]
@@ -165,7 +174,7 @@
     [mapView setRegion:region animated:YES];
 }
 
--(void)removeAllAnnotationExceptOfCurrentUser:(MKMapView *)mapView
+- (void)removeAllAnnotationExceptOfCurrentUser:(MKMapView *)mapView
 {
     NSMutableArray *annForRemove = [[NSMutableArray alloc] initWithArray:mapView.annotations];
     if ([mapView.annotations.lastObject isKindOfClass:[MKUserLocation class]]) {
@@ -210,7 +219,11 @@ didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
     CLLocation *tmp = locations[0];
     
+    /**
+     *    Send notification only if user location is changed.
+     */
     if (_lastUserLocation.coordinate.latitude != tmp.coordinate.latitude || _lastUserLocation.coordinate.longitude != tmp.coordinate.longitude) {
+        // Save the last new user location
         _lastUserLocation = tmp;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"com.alessioroberto.darcountryfinder.newlocation"
                                                             object:self
