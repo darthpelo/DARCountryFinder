@@ -58,10 +58,10 @@
 - (IBAction)positionPressed:(id)sender {
     if (_userPosition == YES) {
         self.userPosition = NO;
-        [_locMgr stopUserLocalization];
+        [self.locMgr stopUserLocalization];
     } else {
         self.userPosition = YES;
-        [_locMgr startUserLocalization];
+        [self.locMgr startUserLocalization];
     }
 }
 
@@ -72,19 +72,18 @@
     
     if ([[segue identifier] isEqualToString:@"toTableView"]) {
         DARNationsTableViewController *vc = (DARNationsTableViewController *)[segue destinationViewController];
-        vc.nationsList = [_locMgr getNationsList];
+        vc.nationsList = [self.locMgr getNationsList];
         
         [MBProgressHUD hideHUDForView:self.view animated:YES];
         
         __weak __typeof(self)weakSelf = self;
         
         vc.countrySelected = ^(NSString *country){
-            [_locMgr stopUserLocalization];
-            weakSelf.userPosition = NO;
-            
-            [_locMgr removeAllAnnotationExceptOfCurrentUser:weakSelf.mapView];
-            
             __strong __typeof(weakSelf)strongSelf = weakSelf;
+            [strongSelf.locMgr stopUserLocalization];
+            strongSelf.userPosition = NO;
+            
+            [_locMgr removeAllAnnotationExceptOfCurrentUser:strongSelf.mapView];
             
             dispatch_queue_t queue = dispatch_get_main_queue();
             /**

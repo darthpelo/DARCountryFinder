@@ -71,7 +71,7 @@
 
 - (void)startUserLocalization
 {
-    self.lastUserLocation = nil;
+    _lastUserLocation = nil;
     
     [self.locationManager startUpdatingLocation];
 }
@@ -83,12 +83,12 @@
 
 - (CLLocation *)getLastUserLocation
 {
-    return self.lastUserLocation;
+    return _lastUserLocation;
 }
 
 - (NSArray *)getNationsList
 {
-    return self.nationsList;
+    return _nationsList;
 }
 
 - (void)reverseGeocodeWithOverlay:(void (^)(id <MKOverlay>, NSString *countryName))success
@@ -124,21 +124,23 @@
 {
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     // Use current user location to determinate, address, country name and country ISO code
+    __weak __typeof(self)weakSelf = self;
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
         if (error) {
             failure(error);
         } else {
-            self.actualUserPlacemark = [placemarks lastObject];
+            __strong __typeof(weakSelf)strongSelf = weakSelf;
+            strongSelf.actualUserPlacemark = [placemarks lastObject];
             
-            if (self.actualUserPlacemark.addressDictionary &&
-                self.actualUserPlacemark.ISOcountryCode &&
-                self.actualUserPlacemark.country) {
+            if (strongSelf.actualUserPlacemark.addressDictionary &&
+                strongSelf.actualUserPlacemark.ISOcountryCode &&
+                strongSelf.actualUserPlacemark.country) {
                 NSMutableDictionary *info = [NSMutableDictionary new];
                 
-                [info setObject:[NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(self.actualUserPlacemark.addressDictionary, NO)]
+                [info setObject:[NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(strongSelf.actualUserPlacemark.addressDictionary, NO)]
                          forKey:@"address"];
-                [info setObject:self.actualUserPlacemark.ISOcountryCode forKey:@"countryCode"];
-                [info setObject:self.actualUserPlacemark.country forKey:@"country"];
+                [info setObject:strongSelf.actualUserPlacemark.ISOcountryCode forKey:@"countryCode"];
+                [info setObject:strongSelf.actualUserPlacemark.country forKey:@"country"];
                 
                 success(info);
             } else
