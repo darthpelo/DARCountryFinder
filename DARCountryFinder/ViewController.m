@@ -52,7 +52,7 @@
 }
 
 /**
- *    User can swith on/off automatic localization
+ *    User can swtich on/off automatic localization
  *
  */
 - (IBAction)positionPressed:(id)sender {
